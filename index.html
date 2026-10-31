@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Horologue — Explore, Learn &amp; Buy Watches</title>
+  <meta name="description" content="Learn how watches work, explore movements, dials, straps, vintage and luxury, browse by category, and find where to buy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%23141414' stroke='%23c9a45c' stroke-width='6'/%3E%3Cpath d='M50 50V22M50 50l18 10' stroke='%23c9a45c' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="top">
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span>Horologue</a>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu">☰</button>
+  <nav id="menu" aria-label="Main">
+    <a href="#categories">Categories</a>
+    <a href="#catalog">Explore</a>
+    <a href="#learn">Learn</a>
+    <a href="#vintage">Vintage &amp; Luxury</a>
+    <a href="#straps">Straps</a>
+    <a href="#collection">My Collection</a>
+    <a href="#buy" class="nav-cta">Buy</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Watch guide · Learn · Collect · Buy</p>
+      <h1>Understand watches, then find <em>yours</em>.</h1>
+      <p class="lead">From ₹1,500 quartz to million-rupee automatics. Browse by category, learn what is inside the case, and see where to buy with confidence.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#catalog">Explore watches</a>
+        <a class="btn" href="#learn">Start learning</a>
+      </div>
+      <dl class="stats">
+        <div><dt id="stat-watches">25</dt><dd>Reference watches</dd></div>
+        <div><dt>7</dt><dd>Movement types</dd></div>
+        <div><dt>9</dt><dd>Categories</dd></div>
+      </dl>
+    </div>
+    <div class="hero-clock" aria-hidden="true">
+      <svg id="live-clock" viewBox="0 0 200 200"></svg>
+      <p class="clock-cap">Live clock (a tiny quartz watch)</p>
+    </div>
+  </section>
+
+  <section id="categories" class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Categories</p>
+        <h2>Shop by category</h2>
+        <p class="sub">Pick a style and jump straight to matching watches.</p>
+      </header>
+      <div id="cat-grid" class="cat-grid"></div>
+    </div>
+  </section>
+
+  <section id="catalog" class="section alt">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Explore</p>
+        <h2>Watch finder</h2>
+        <p class="sub">Filter by category, movement and budget. Tap a card for details and where to look for it.</p>
+      </header>
+      <div class="filters">
+        <input id="f-search" type="search" placeholder="Search brand or model…" aria-label="Search watches">
+        <select id="f-move" aria-label="Movement"><option value="">Any movement</option></select>
+        <select id="f-tier" aria-label="Budget"><option value="">Any budget</option></select>
+        <select id="f-sort" aria-label="Sort">
+          <option value="asc">Price: low to high</option>
+          <option value="desc">Price: high to low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div id="chips" class="chips" role="group" aria-label="Category filter"></div>
+      <p id="result-count" class="count" aria-live="polite"></p>
+      <div id="watch-grid" class="watch-grid"></div>
+      <p class="note">Prices are rough Indian-market ranges and change often; confirm with the seller. Illustrations are generic drawings, not product photos.</p>
+    </div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Learn</p>
+        <h2>How watches work</h2>
+        <p class="sub">The one real choice is the movement, the engine inside.</p>
+      </header>
+
+      <div id="move-tabs" class="tabs" role="tablist" aria-label="Movement types"></div>
+      <article id="move-panel" class="panel" role="tabpanel"></article>
+
+      <div class="table-wrap">
+        <table class="cmp" id="move-table">
+          <caption class="sr">Movement comparison</caption>
+          <thead><tr><th>Movement</th><th>Typical accuracy</th><th>Power</th><th>Service</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h3 class="h3">Dials: the face of the watch</h3>
+      <div id="dial-grid" class="mini-grid"></div>
+
+      <h3 class="h3">Complications: extra functions</h3>
+      <div id="comp-grid" class="mini-grid"></div>
+
+      <h3 class="h3">Glossary</h3>
+      <input id="g-search" type="search" placeholder="Search terms (crown, bezel, lug…)" aria-label="Search glossary">
+      <dl id="glossary" class="glossary"></dl>
+    </div>
+  </section>
+
+  <section id="vintage" class="section alt">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Vintage &amp; Luxury</p>
+        <h2>History and haute horlogerie</h2>
+      </header>
+      <div class="two-col">
+        <article class="card-lg">
+          <h3>Vintage</h3>
+          <p>Vintage watches are bought for design, history and patina. In India, <strong>HMT</strong> is the heart of it. HMT began making watches in the early 1960s with technical help from Citizen of Japan, and models like the Janata, Pilot and Kohinoor became household names. HMT-branded watches are still sold today, though the original factories closed around 2016, which is a big reason older pieces are collectible.</p>
+          <h4>Before you buy vintage</h4>
+          <ul class="ticks">
+            <li>Does the crown wind and set smoothly? Do hands move on all three positions?</li>
+            <li>Is the dial original (clean text and lume) or <em>redialled</em>?</li>
+            <li>Crystal cracks, rust inside the case, or moisture marks are red flags</li>
+            <li>Ask when it was last serviced, and whether parts are available</li>
+            <li>Beware of 'Franken-watches' built from mixed parts</li>
+          </ul>
+          <button class="btn small" data-cat-jump="vintage">See vintage in the finder →</button>
+        </article>
+        <article class="card-lg">
+          <h3>Luxury</h3>
+          <p>What you pay for in a luxury watch: the <strong>movement</strong> and its hand finishing, <strong>materials</strong> (904L steel, gold, ceramic, sapphire), <strong>brand heritage</strong>, and <strong>scarcity</strong>. Resale value matters too: some models hold value well; many do not.</p>
+          <div class="tiers">
+            <div><b>Entry luxury</b><span>₹50,000 – ₹5 lakh</span><small>Tissot, Hamilton, Longines, Seiko Presage</small></div>
+            <div><b>Core luxury</b><span>₹5 – ₹15 lakh</span><small>Omega, Tudor, Breitling, Grand Seiko, Zenith</small></div>
+            <div><b>High horology</b><span>₹15 lakh +</span><small>Rolex sports models, Patek Philippe, Audemars Piguet, Vacheron</small></div>
+          </div>
+          <button class="btn small" data-cat-jump="luxury">See luxury in the finder →</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="straps" class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Straps &amp; sizing</p>
+        <h2>Straps, bracelets and fit</h2>
+        <p class="sub">A new strap changes the whole personality of a watch for little money.</p>
+      </header>
+      <div id="strap-grid" class="mini-grid"></div>
+
+      <div class="tool">
+        <h3>Case size guide</h3>
+        <p>Enter your wrist circumference to get a rough case-size range.</p>
+        <label for="wrist">Wrist (cm)</label>
+        <input id="wrist" type="number" min="12" max="26" step="0.5" value="16.5" inputmode="decimal">
+        <p id="wrist-out" class="tool-out" aria-live="polite"></p>
+        <p class="note">Lug-to-lug length matters as much as diameter: it should not overhang your wrist.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="collection" class="section alt">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">My Collection</p>
+        <h2>The box of ten</h2>
+        <p class="sub">A look at my own watches, from vintage mechanicals to digital tool watches.</p>
+      </header>
+      <figure class="collection-hero">
+        <img src="img/collection.jpg" alt="A ten-slot watch box holding the whole collection" loading="lazy">
+        <figcaption>All ten in the box</figcaption>
+      </figure>
+      <div id="my-grid" class="my-grid"></div>
+      <div class="insights" id="insights"></div>
+    </div>
+  </section>
+
+  <section id="buy" class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow">Buy</p>
+        <h2>Buying guide</h2>
+        <p class="sub">Where to look, what to check, and how to avoid fakes.</p>
+      </header>
+      <div class="two-col">
+        <article class="card-lg">
+          <h3>Pre-purchase checklist</h3>
+          <ul id="checklist" class="check"></ul>
+          <p class="note" id="check-note"></p>
+        </article>
+        <article class="card-lg">
+          <h3>Red flags</h3>
+          <ul id="flags" class="warn"></ul>
+        </article>
+      </div>
+      <h3 class="h3">Where to buy</h3>
+      <div id="store-grid" class="store-grid"></div>
+      <p class="note">External links open the retailers' own sites. This guide has no affiliation with, and earns nothing from, any of them.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p><strong>Horologue</strong> · A personal watch guide. Built with plain HTML, CSS and JavaScript.</p>
+  <p><a href="#top">Back to top ↑</a></p>
+</footer>
+
+<dialog id="dlg">
+  <form method="dialog"><button class="dlg-close" aria-label="Close">✕</button></form>
+  <div id="dlg-body"></div>
+</dialog>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
