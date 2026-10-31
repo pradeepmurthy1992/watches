@@ -378,3 +378,22 @@ const DEALS = [
   ["Jaipur Watch Co.", "Jaipur Watch Co.", "Rare Earth Jump Hour (pre-order)", 55000, 0, "https://jaipur.watch/"],
   ["Jaipur Watch Co.", "Jaipur Watch Co.", "Devanagari Baagh III Steel (pre-order)", 60000, 0, "https://jaipur.watch/"]
 ];
+
+/* Learning videos (YouTube). Each id was checked to exist and be embeddable on 31 Oct 2026. */
+const VIDEOS = {
+  anatomy: [{ id: "EuBv8Tu3fcg", t: "Different parts of a watch", by: "Jewelers Mutual Group" }],
+  quartz: [{ id: "1pM6uD8nePo", t: "How a quartz watch works", by: "engineerguy" }, { id: "Rg8RFAbSs6Y", t: "What exactly is a quartz watch?", by: "Small Things" }],
+  hand: [{ id: "fU0Kd9itIVY", t: "How a mechanical watch works, explained in 3D", by: "Atelier DE GRIFF" }, { id: "6Hbhmvnsalk", t: "Balance wheel and escapement animation", by: "Fixed iT" }],
+  automatic: [{ id: "-5HFwMdLoH0", t: "Automatic movement explained: rotor, mainspring, escapement", by: "crown&patina" }, { id: "fR5yoiWHJRY", t: "The Perpetual rotor", by: "Rolex" }],
+  solar: [{ id: "8fHJJxGOndQ", t: "Citizen Eco-Drive: how it works", by: "Citizen Watch US" }, { id: "VsBD_qUkfaU", t: "How solar quartz watches work", by: "Wes' Watch Room" }],
+  spring: [{ id: "1QSbheeMIHk", t: "What is Seiko Spring Drive and how does it work?", by: "Long Island Watch" }, { id: "-d_HK7PsMt4", t: "Spring Drive: glide wheel braking mechanism", by: "Yutaka Tsutano" }],
+  straps: [{ id: "xVz30ZlQ9uM", t: "Every watch strap type explained", by: "Watch Realist" }, { id: "hgaLNbgGDkY", t: "How to measure your watch's lug width", by: "Artem Straps" }]
+};
+
+/* Photos from your own box, shown next to matching topics */
+const MINE = {
+  dial: { "Guilloché": ["hmt-plus.jpg", "Your HMT Plus: patterned centre"], "Day-date window": ["vintage-day-date.jpg", "Your vintage day-date"], "Digital LCD": ["casio-world-time.jpg", "Your Casio World Time"], "Sunburst": ["sonata-green.jpg", "Your Sonata green dial"] },
+  comp: { "GMT / Dual time": ["carlington.jpg", "Your Carlington dual time"], "World time": ["casio-world-time.jpg", "Your Casio World Time"], "Alarm / Countdown timer": ["casio-world-time.jpg", "Your Casio, 3 alarms + timer"], "Date / Day-date": ["vintage-day-date.jpg", "Your vintage day-date"] },
+  strap: { "Leather": ["hmt-plus.jpg", "Your HMT Plus on tan leather"], "Stainless-steel bracelet": ["texovera.jpg", "Your Texovera steel bracelet"], "Rubber / Silicone": ["carlington.jpg", "Your Carlington silicone strap"], "Canvas / Fabric": ["vk-collection.jpg", "Your VK Collection fabric strap"] },
+  movement: { hand: ["hmt-kohinoor.jpg", "Your HMT Kohinoor (hand-wound)"], quartz: ["hmt-plus.jpg", "Your HMT Plus (quartz)"], digital: ["casio-world-time.jpg", "Your Casio World Time (ana-digi)"], automatic: ["vintage-day-date.jpg", "Your vintage day-date (probably automatic)"] }
+};

@@ -182,13 +182,28 @@
     $("#dlg").addEventListener("click", e => { if (e.target.id === "dlg") e.target.close(); });
   }
 
+  /* ---------- Videos (click-to-load, privacy-friendly) ---------- */
+  const videoHTML = v => `<div class="video"><div class="frame"><img src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy">
+      <button class="play" type="button" data-vid="${esc(v.id)}" aria-label="Play: ${esc(v.t)}"><span>▶</span></button></div>
+      <div class="cap"><b>${esc(v.t)}</b><span>${esc(v.by)}</span><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a></div></div>`;
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".play[data-vid]");
+    if (!b) return;
+    const frame = b.parentElement;
+    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(b.dataset.vid)}?autoplay=1&rel=0" title="Video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  });
+  const photoHTML = p => p ? `<figure class="photo"><img src="img/${esc(p[0])}" alt="${esc(p[1])}" loading="lazy"><figcaption>${esc(p[1])}</figcaption></figure>` : "";
+
   /* ---------- Learn ---------- */
   function renderMovements() {
     const tabs = $("#move-tabs"), panel = $("#move-panel"), tbody = $("#move-table tbody");
     const show = m => {
       panel.innerHTML = `<h3>${esc(m.name)}</h3><p class="tagline">${esc(m.tag)}</p><p>${esc(m.how)}</p>
         <div class="facts"><div><b>Accuracy</b>${esc(m.acc)}</div><div><b>Power</b>${esc(m.power)}</div><div><b>Service</b>${esc(m.service)}</div></div>
-        <div class="pc"><div class="pro"><b>Good for</b><p>${esc(m.pros)}</p></div><div class="con"><b>Watch out</b><p>${esc(m.cons)}</p></div></div>`;
+        <div class="pc"><div class="pro"><b>Good for</b><p>${esc(m.pros)}</p></div><div class="con"><b>Watch out</b><p>${esc(m.cons)}</p></div></div>
+        <h4>How it works, step by step</h4>${Diagrams.flow(m.id)}
+        <div class="panel-media">${photoHTML(MINE.movement[m.id])}
+        ${(VIDEOS[m.id] || []).length ? `<div><h4>Watch and learn</h4><div class="video-grid">${VIDEOS[m.id].map(videoHTML).join("")}</div></div>` : ""}</div>`;
       tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id === m.id)));
     };
     MOVEMENTS.forEach((m, i) => {
@@ -200,10 +215,15 @@
     });
   }
 
-  const miniGrid = (id, items, extra) => {
+  const miniGrid = (id, items, extra, art) => {
     const g = $(id);
-    items.forEach(i => g.append(el("div", { class: "mini" }, `<h4>${esc(i.n)}</h4><p>${esc(i.d)}</p>${extra ? extra(i) : ""}`)));
+    items.forEach(i => g.append(el("div", { class: "mini" }, `${art ? art(i) : ""}<h4>${esc(i.n)}</h4><p>${esc(i.d)}</p>${extra ? extra(i) : ""}`)));
   };
+  const DIAL_KIND = { "Sunburst": "sunburst", "Guilloché": "guilloche", "Tapisserie": "tapisserie", "Enamel (Grand Feu)": "enamel", "Sector": "sector", "Panda / Reverse panda": "panda", "Skeleton / Open-worked": "skeleton", "Tropical": "tropical", "Meteorite / Mother-of-pearl": "meteorite", "Luminous (lume)": "lume", "Day-date window": "daydate", "Digital LCD": "digital" };
+  const COMP_KIND = { "Date / Day-date": "date", "Chronograph": "chrono", "GMT / Dual time": "gmt", "World time": "world", "Alarm / Countdown timer": "alarm", "Moon phase": "moon", "Power reserve indicator": "reserve", "Perpetual calendar": "perpetual", "Tourbillon": "tourbillon", "Minute repeater": "repeater" };
+  const STRAP_KIND = { "Leather": [["leather", ""]], "Stainless-steel bracelet": [["steelOyster", "Oyster"], ["steelJubilee", "Jubilee"], ["steelPresident", "President"], ["mesh", "Milanese mesh"]], "Rubber / Silicone": [["rubber", ""]], "NATO / Zulu": [["nato", ""]], "Canvas / Fabric": [["canvas", ""]], "Ceramic / Titanium links": [["ceramic", ""]] };
+  const swatchArt = (kind, mine) => i => `<div class="art">${Diagrams.dial(kind[i.n] || "sunburst")}${mine[i.n] ? `<img class="photo-thumb" src="img/${esc(mine[i.n][0])}" alt="${esc(mine[i.n][1])}" loading="lazy"><small>${esc(mine[i.n][1])}</small>` : ""}</div>`;
+  const strapArt = i => `<div class="strap-set">${(STRAP_KIND[i.n] || []).map(([k, cap]) => `<figure>${Diagrams.strap(k)}${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`).join("")}</div>${MINE.strap[i.n] ? `<div class="art"><img class="photo-thumb" src="img/${esc(MINE.strap[i.n][0])}" alt="${esc(MINE.strap[i.n][1])}" loading="lazy"><small>${esc(MINE.strap[i.n][1])}</small></div>` : ""}`;
 
   function renderGlossary() {
     const dl = $("#glossary");
@@ -374,9 +394,12 @@
   renderChips();
   renderCatalog();
   renderMovements();
-  miniGrid("#dial-grid", DIALS);
-  miniGrid("#comp-grid", COMPLICATIONS);
-  miniGrid("#strap-grid", STRAPS, s => `<span class="good">Best for: ${esc(s.good)}</span>`);
+  miniGrid("#dial-grid", DIALS, null, swatchArt(DIAL_KIND, MINE.dial));
+  miniGrid("#comp-grid", COMPLICATIONS, null, swatchArt(COMP_KIND, MINE.comp));
+  miniGrid("#strap-grid", STRAPS, s => `<span class="good">Best for: ${esc(s.good)}</span>`, strapArt);
+  $("#anatomy-box").innerHTML = Diagrams.anatomy() + `<div class="video-grid">${VIDEOS.anatomy.map(videoHTML).join("")}</div>`;
+  $("#lug-box").innerHTML = Diagrams.lug();
+  $("#strap-videos").innerHTML = VIDEOS.straps.map(videoHTML).join("");
   renderGlossary();
   setupWrist();
   renderCollection();
