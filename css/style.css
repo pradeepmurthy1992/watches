@@ -207,7 +207,7 @@ dialog p { color: var(--muted); }
 .pick small { color: var(--gold); text-transform: uppercase; letter-spacing: .12em; font-size: .68rem; font-weight: 600; }
 .pick b { display: block; font: 600 1.15rem var(--serif); }
 .pick span { color: var(--muted); font-size: .85rem; }
-.deal-filters { grid-template-columns: 2fr 1fr 1fr 1fr; margin-top: 1rem; }
+.deal-filters { grid-template-columns: 2fr 1.4fr 1fr 1fr 1fr; margin-top: 1rem; }
 @media (max-width: 720px) { .deal-filters { grid-template-columns: 1fr 1fr; } .deal-filters input { grid-column: 1 / -1; } }
 .deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: .8rem; }
 .deal { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: .15rem; transition: .2s; }
@@ -220,3 +220,8 @@ dialog p { color: var(--muted); }
 .off { display: inline-block; background: rgba(127,182,133,.18); color: var(--ok); border-radius: 99px; padding: .05rem .55rem; font-size: .75rem; margin-left: .4rem; }
 
 .store-group { margin: 1.6rem 0 .7rem; color: var(--gold-2); font-size: 1.3rem; }
+
+.stock { display: inline-flex; gap: .5rem; align-items: center; margin-top: .8rem; color: var(--muted); font-size: .9rem; cursor: pointer; }
+.stock input { width: 18px; height: 18px; accent-color: var(--gold); }
+.deal.out { opacity: .55; }
+.more { text-align: center; margin-top: 1.2rem; }

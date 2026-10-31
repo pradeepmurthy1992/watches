@@ -11,3 +11,9 @@ Plain HTML, CSS and JavaScript — no build step.
 - `img/` – photos of the collection
 
 Edit `js/data.js` to add watches or categories. Open `index.html` directly, or serve the folder with any static server.
+
+## Offers data
+
+`data/deals.json` holds every watch from the shops that publish a Shopify `/products.json` catalogue. It is rebuilt by `scripts/scrape_offers.py` (standard-library Python) and refreshed daily by the GitHub Action in `.github/workflows/refresh-offers.yml`. Run it by hand with `python scripts/scrape_offers.py`.
+
+Shops that block automated reading (Helios, Tata CLiQ, Swiss Time House, Hour Studio) keep a small hand-picked snapshot in `js/data.js`.

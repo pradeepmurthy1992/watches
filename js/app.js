@@ -277,30 +277,63 @@
 
   /* ---------- Deals ---------- */
   const inr = n => "₹" + n.toLocaleString("en-IN");
-  const dealOff = d => d[4] > d[3] ? Math.round((1 - d[3] / d[4]) * 100) : 0;
-  function renderDeals() {
-    $("#deals-date").textContent = DEALS_DATE;
+  const dealOff = d => d.mrp > d.price ? Math.round((1 - d.price / d.mrp) * 100) : 0;
+  const PAGE = 48;
+  const modelOf = d => d.model.toLowerCase().startsWith(d.brand.toLowerCase()) ? d.model.slice(d.brand.length).trim() || d.model : d.model;
+
+  async function loadDeals() {
+    // Hand-picked snapshot shops that cannot be scraped (kept from data.js).
+    const staticItems = DEALS.map(d => ({ site: d[0], brand: d[1], model: d[2], price: d[3], mrp: d[4], avail: true, url: d[5], live: false }));
+    let live = [], updated = null;
+    try {
+      const res = await fetch("data/deals.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error(res.status);
+      const j = await res.json();
+      updated = j.updated;
+      live = j.items.map(i => ({ site: j.sites[i[0]].name, brand: i[1], model: i[2], price: i[3], mrp: i[4], avail: !!i[5], url: j.sites[i[0]].url + i[6], live: true }));
+    } catch { /* offline or no data file: fall back to the snapshot only */ }
+    const liveSites = new Set(live.map(d => d.site));
+    return { items: [...live, ...staticItems.filter(d => !liveSites.has(d.site))], updated, hasLive: live.length > 0 };
+  }
+
+  async function renderDeals() {
+    const { items, updated, hasLive } = await loadDeals();
+    $("#deals-date").textContent = hasLive
+      ? `${new Date(updated).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} (refreshed automatically every day)`
+      : DEALS_DATE;
     const siteSel = $("#d-site");
-    [...new Set(DEALS.map(d => d[0]))].forEach(s => siteSel.append(el("option", { value: s }, esc(s))));
-    const sorted = fn => [...DEALS].sort(fn)[0];
+    const counts = {};
+    items.forEach(d => { counts[d.site] = (counts[d.site] || 0) + 1; });
+    Object.keys(counts).sort().forEach(s => siteSel.append(el("option", { value: s }, `${esc(s)} (${counts[s].toLocaleString("en-IN")})`)));
+
+    const inStock = items.filter(d => d.avail);
+    const best = (list, fn) => list.reduce((m, d) => (m === null || fn(d, m) < 0 ? d : m), null);
     const picks = [
-      ["Biggest discount", sorted((a, b) => dealOff(b) - dealOff(a))],
-      ["Cheapest watch", sorted((a, b) => a[3] - b[3])],
-      ["Best under ₹25,000", [...DEALS].filter(d => d[3] <= 25000).sort((a, b) => dealOff(b) - dealOff(a) || a[3] - b[3])[0]],
-      ["Biggest saving in ₹", sorted((a, b) => (b[4] - b[3]) - (a[4] - a[3]))]
-    ];
+      ["Biggest discount (in stock)", best(inStock.filter(d => d.price >= 1000), (a, b) => dealOff(b) - dealOff(a) || a.price - b.price)],
+      ["Cheapest in stock", best(inStock.filter(d => d.price >= 500), (a, b) => a.price - b.price)],
+      ["Best under ₹25,000", best(inStock.filter(d => d.price <= 25000 && d.price >= 1000), (a, b) => dealOff(b) - dealOff(a) || a.price - b.price)],
+      ["Biggest saving in ₹", best(inStock, (a, b) => (b.mrp - b.price) - (a.mrp - a.price))]
+    ].filter(p => p[1]);
     $("#deal-picks").innerHTML = picks.map(([t, d]) =>
-      `<a class="pick" href="${esc(d[5])}" target="_blank" rel="noopener noreferrer"><small>${esc(t)}</small><b>${esc(d[1])} ${esc(d[2])}</b><span>${inr(d[3])}${dealOff(d) ? ` (${dealOff(d)}% off ${inr(d[4])})` : ""} · ${esc(d[0])}</span></a>`).join("");
+      `<a class="pick" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer"><small>${esc(t)}</small><b>${esc(d.brand)} ${esc(modelOf(d))}</b><span>${inr(d.price)}${dealOff(d) ? ` (${dealOff(d)}% off ${inr(d.mrp)})` : ""} · ${esc(d.site)}</span></a>`).join("");
+
+    let shown = PAGE, list = [];
     const draw = () => {
-      const q = $("#d-search").value.trim().toLowerCase(), site = siteSel.value, max = Number($("#d-max").value) || Infinity, sort = $("#d-sort").value;
-      const list = DEALS.filter(d => (!site || d[0] === site) && d[3] <= max && (!q || (d[1] + " " + d[2]).toLowerCase().includes(q)));
-      list.sort((a, b) => sort === "asc" ? a[3] - b[3] : sort === "desc" ? b[3] - a[3] : dealOff(b) - dealOff(a) || a[3] - b[3]);
-      $("#deal-count").textContent = `${list.length} offer${list.length === 1 ? "" : "s"}`;
-      $("#deal-grid").innerHTML = list.map(d => `<a class="deal" href="${esc(d[5])}" target="_blank" rel="noopener noreferrer">
-        <span class="site">${esc(d[0])}</span><b>${esc(d[1])}</b><span class="model">${esc(d[2])}</span>
-        <span class="price">${inr(d[3])}${dealOff(d) ? `<s>${inr(d[4])}</s><span class="off">${dealOff(d)}% off</span>` : ""}</span></a>`).join("") || '<p class="empty">No offers match.</p>';
+      const q = $("#d-search").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const site = siteSel.value, max = Number($("#d-max").value) || Infinity, min = Number($("#d-min").value) || 0;
+      const stockOnly = $("#d-stock").checked, sort = $("#d-sort").value;
+      list = items.filter(d => (!site || d.site === site) && d.price <= max && d.price >= min && (!stockOnly || d.avail) &&
+        q.every(w => (d.brand + " " + d.model).toLowerCase().includes(w)));
+      list.sort((a, b) => sort === "asc" ? a.price - b.price : sort === "desc" ? b.price - a.price : dealOff(b) - dealOff(a) || a.price - b.price);
+      $("#deal-count").textContent = `${list.length.toLocaleString("en-IN")} offer${list.length === 1 ? "" : "s"} · showing ${Math.min(shown, list.length).toLocaleString("en-IN")}`;
+      $("#deal-grid").innerHTML = list.slice(0, shown).map(d => `<a class="deal${d.avail ? "" : " out"}" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">
+        <span class="site">${esc(d.site)}${d.avail ? "" : " · sold out"}</span><b>${esc(d.brand)}</b><span class="model">${esc(modelOf(d))}</span>
+        <span class="price">${inr(d.price)}${dealOff(d) ? `<s>${inr(d.mrp)}</s><span class="off">${dealOff(d)}% off</span>` : ""}</span></a>`).join("") || '<p class="empty">No offers match.</p>';
+      $("#d-more").hidden = shown >= list.length;
     };
-    ["#d-search", "#d-site", "#d-max", "#d-sort"].forEach(s => $(s).addEventListener("input", draw));
+    const reset = () => { shown = PAGE; draw(); };
+    ["#d-search", "#d-site", "#d-max", "#d-min", "#d-sort", "#d-stock"].forEach(s => $(s).addEventListener("input", reset));
+    $("#d-more").addEventListener("click", () => { shown += PAGE * 2; draw(); });
     draw();
   }
 
