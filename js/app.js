@@ -148,10 +148,10 @@
   function openWatch(w) {
     const enc = encodeURIComponent(w.q);
     const links = w.t >= 4
-      ? `<a class="btn primary" target="_blank" rel="noopener noreferrer" href="https://www.chrono24.com/search/index.htm?query=${enc}">Pre-owned on Chrono24</a>
+      ? `<a class="btn primary" target="_blank" rel="noopener noreferrer" href="https://www.chrono24.in/search/index.htm?query=${enc}">Pre-owned on Chrono24</a>
          <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/search?q=${encodeURIComponent(w.b + " authorized dealer India")}">Authorized dealers</a>`
       : `<a class="btn primary" target="_blank" rel="noopener noreferrer" href="https://www.amazon.in/s?k=${enc}">Search Amazon.in</a>
-         <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.chrono24.com/search/index.htm?query=${enc}">Chrono24</a>`;
+         <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.chrono24.in/search/index.htm?query=${enc}">Chrono24</a>`;
     $("#dlg-body").innerHTML = `
       <div class="w-art">${watchSVG(w)}</div>
       <span class="w-brand">${esc(w.b)}</span>
@@ -265,8 +265,14 @@
     });
     upd();
     RED_FLAGS.forEach(t => $("#flags").append(el("li", {}, esc(t))));
-    STORES.forEach(s => $("#store-grid").append(el("a", { class: "store", href: s.u, target: "_blank", rel: "noopener noreferrer" },
-      `<b>${esc(s.n)}</b><span>${esc(s.d)}</span><small>${esc(s.tag)} ↗</small>`)));
+    const box = $("#store-grid");
+    [...new Set(STORES.map(s => s.g))].forEach(g => {
+      box.append(el("h4", { class: "store-group" }, esc(g)));
+      const row = el("div", { class: "store-row" });
+      STORES.filter(s => s.g === g).forEach(s => row.append(el("a", { class: "store", href: s.u, target: "_blank", rel: "noopener noreferrer" },
+        `<b>${esc(s.n)}</b><span>${esc(s.d)}</span><small>${esc(s.tag)} ↗</small>`)));
+      box.append(row);
+    });
   }
 
   /* ---------- Deals ---------- */

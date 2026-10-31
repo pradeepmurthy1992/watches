@@ -160,7 +160,8 @@ input::placeholder { color: var(--muted); }
 .tool label { display: block; font-size: .85rem; color: var(--muted); margin: .8rem 0 .3rem; }
 .tool-out { margin: 1rem 0 0; color: var(--gold-2); font-weight: 600; }
 
-.store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: .9rem; }
+.store-grid { display: block; }
+.store-row { display: grid; margin-bottom: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: .9rem; }
 .store { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem; display: flex; flex-direction: column; gap: .3rem; text-decoration: none; color: var(--text); transition: .2s; }
 .store:hover { border-color: var(--gold); }
 .store b { font: 600 1.2rem var(--serif); } .store span { color: var(--muted); font-size: .88rem; } .store small { color: var(--gold); margin-top: auto; font-weight: 600; }
@@ -217,3 +218,5 @@ dialog p { color: var(--muted); }
 .deal .price { margin-top: .5rem; font-weight: 600; color: var(--gold-2); }
 .deal .price s { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: .4rem; }
 .off { display: inline-block; background: rgba(127,182,133,.18); color: var(--ok); border-radius: 99px; padding: .05rem .55rem; font-size: .75rem; margin-left: .4rem; }
+
+.store-group { margin: 1.6rem 0 .7rem; color: var(--gold-2); font-size: 1.3rem; }
