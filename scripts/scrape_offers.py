@@ -18,7 +18,14 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "de
 SITES = [
     {"name": "Just In Time",        "base": "https://justintime.in",              "kind": "all",   "group": "Retailer"},
     {"name": "Kamal Watch Co.",     "base": "https://www.kamalwatch.com",         "kind": "watch", "group": "Retailer"},
-    {"name": "Zeus Kicks",          "base": "https://www.zeuskicks.com",          "kind": "watch", "group": "Luxury reseller"},
+    {"name": "Zeus Kicks",          "base": "https://www.zeuskicks.com",          "kind": "watch", "group": "Luxury reseller",
+     "collections": ["rolex", "omega-watches", "omega", "tag-heuer", "audemars-piguet", "patek-philipp", "cartier-watches", "hublot-watches",
+                     "breitling", "tudor", "iwc-watches", "panerai-watches", "zenith-watches", "chopard-watches", "jacob-co-watches",
+                     "franck-muller", "piaget-watches", "breguet-watches", "blancpain-watches", "girard-perregaux-watches", "oris-watches",
+                     "ulysse-nardin-watches", "concord-watches", "de-grisogono-watches", "chanel-watches", "bvlgari",
+                     "authentic-longines-watch-collection-for-men-and-women", "longines", "movado", "seiko", "casio", "citizen", "swatch",
+                     "michael-kors", "boss-watches", "emporio-armani-watches", "armani-exchange-watches", "diesel-watches", "bentley-watches",
+                     "maserati-watches", "just-cavalli-watches", "salvatore-ferragmao-watches", "richard-mille", "watches"]},
     {"name": "Vintage Watcholic",   "base": "https://vintagewatcholic.in",        "kind": "all",   "group": "Vintage", "brands": ["HMT", "Seiko", "Citizen", "Roamer", "Ricoh", "Le Montres", "Titan", "Casio", "Timex", "Orient", "Technos", "Favre Leuba", "Rado", "Omega", "Tissot", "Sonata"]},
     {"name": "Sylvi",               "base": "https://sylvi.in",                   "kind": "all",   "group": "Indian brand", "brand": "Sylvi"},
     {"name": "Meridian Watches",    "base": "https://meridianwatches.in",         "kind": "all",   "group": "Indian brand", "brand": "Meridian"},
@@ -27,6 +34,8 @@ SITES = [
     {"name": "Bangalore Watch Co.", "base": "https://www.bangalorewatchco.in",    "kind": "all",   "group": "Indian brand", "brand": "Bangalore Watch Co."},
     {"name": "Jaipur Watch Co.",    "base": "https://jaipur.watch",               "kind": "all",   "group": "Indian brand", "brand": "Jaipur Watch Co."},
 ]
+
+WATCH_VENDORS = {"rolex", "omega", "patek philippe", "audemars piguet", "cartier", "tag heuer", "hublot", "breitling", "tudor", "iwc", "panerai", "zenith"}
 
 NOT_WATCH = re.compile(r"strap|band|accessor|box|tool|bag|gift|cleaning|spring ?bar|bracelet link|gift card|sunglass|shoe|slide|sneaker|belt|wallet|perfume|pen\b|case$", re.I)
 
@@ -97,7 +106,9 @@ def pick_brand(site, p):
 def wanted(site, p):
     ptype = p.get("product_type", "") or ""
     if site["kind"] == "watch":
-        return bool(re.search("watch", ptype, re.I)) and not re.search(r"strap|accessor|box|tool", ptype, re.I)
+        typed = bool(re.search("watch", ptype, re.I)) and not re.search(r"strap|accessor|box|tool", ptype, re.I)
+        blank_ok = not ptype and (p.get("vendor") or "").strip().lower() in WATCH_VENDORS and not strap_only(p.get("title", ""))
+        return typed or blank_ok
     if NOT_WATCH.search(ptype):
         return False
     return not NOT_WATCH_TITLE.search(p.get("title", "")) and not strap_only(p.get("title", ""))
@@ -119,21 +130,29 @@ def to_item(idx, site, p):
             "/products/" + p["handle"]]
 
 
-def scrape(site):
-    items, seen, page = [], set(), 1
-    while page <= MAX_PAGES:
-        data = get_json(f"{site['base']}/products.json?limit=250&page={page}")
+def pages(url_base):
+    """Yield products from a /products.json style endpoint, page by page."""
+    for page in range(1, MAX_PAGES + 1):
+        data = get_json(f"{url_base}?limit=250&page={page}")
         products = (data or {}).get("products") or []
         if not products:
-            break
-        for p in products:
+            return
+        yield from products
+        if len(products) < 250:
+            return
+        time.sleep(PAUSE)
+
+
+def scrape(site):
+    seen = set()
+    sources = [f"{site['base']}/collections/{c}/products.json" for c in site["collections"]] if site.get("collections") \
+        else [f"{site['base']}/products.json"]
+    for src in sources:
+        for p in pages(src):
             if p["handle"] in seen or not wanted(site, p):
                 continue
             seen.add(p["handle"])
             yield p
-        if len(products) < 250:
-            break
-        page += 1
         time.sleep(PAUSE)
 
 
@@ -148,6 +167,9 @@ def main():
     prev_idx = {s["name"]: i for i, s in enumerate(prev["sites"])}
     for idx, site in enumerate(SITES):
         if only and site["name"] not in only:
+            old = [i for i in prev["items"] if i[0] == prev_idx.get(site["name"], -1)]
+            result["items"].extend([[idx] + i[1:] for i in old])
+            result["sites"].append({"name": site["name"], "url": site["base"], "group": site["group"], "count": len(old)})
             continue
         new_items = []
         try:
@@ -168,10 +190,6 @@ def main():
         print(f"{site['name']}: {n} watches", flush=True)
         result["sites"].append({"name": site["name"], "url": site["base"], "group": site["group"], "count": n})
         time.sleep(PAUSE)
-    # keep site indexes stable: sites list is positional, so pad skipped ones
-    if only:
-        print("partial run; not writing", file=sys.stderr)
-        return
     if not result["items"]:
         sys.exit("nothing scraped; keeping the previous file")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
