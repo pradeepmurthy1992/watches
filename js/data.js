@@ -104,6 +104,21 @@ const WATCHES = [
   { n: "Patek Philippe Calatrava", b: "Patek Philippe", c: ["dress", "luxury"], m: "automatic", y: "1932", s: "39 mm", t: 5, p: "₹20 lakh +",
     d: "Bauhaus-inspired round dress watch. Understated, refined and passed down as an heirloom.",
     kind: "analog", dial: "#f1ece0", cs: "#d6b46a", hand: "#222", q: "Patek Philippe Calatrava" },
+  { n: "Casio G-Shock GA-2100", b: "Casio", c: ["digital"], m: "digital", y: "2019", s: "45.4 mm", t: 2, p: "₹9,000 – ₹11,000",
+    d: "The slim octagonal 'CasiOak' with an analog-digital dial and carbon-core guard case. It is hugely popular for the price.",
+    kind: "analog", dial: "#1a1a1a", cs: "#2a2a2a", hand: "#e9e4d6", q: "Casio G-Shock GA-2100" },
+  { n: "Citizen Eco-Drive BM7630", b: "Citizen", c: ["field"], m: "solar", y: "Modern", s: "≈ 42 mm", t: 2, p: "₹25,000 – ₹30,000",
+    d: "A solar-powered military-style watch with a lightweight case and a leather or textile strap.",
+    kind: "analog", dial: "#2b3023", cs: "#a8adb2", hand: "#eee", q: "Citizen Eco-Drive BM7630" },
+  { n: "Longines HydroConquest", b: "Longines", c: ["dive", "luxury"], m: "automatic", y: "2007 onward", s: "39 / 41 / 43 mm", t: 4, p: "₹1.2 – 1.9 lakh",
+    d: "A 300 m sports diver from Swiss Longines with a ceramic bezel and a good-value automatic movement.",
+    kind: "dive", dial: "#12306b", cs: "#c3c7cc", hand: "#f2f2f2", q: "Longines HydroConquest" },
+  { n: "TAG Heuer Carrera", b: "TAG Heuer", c: ["chrono", "luxury"], m: "automatic", y: "1963", s: "39 / 43 mm", t: 4, p: "₹1.6 – 3.5 lakh",
+    d: "Named after a road race, a racing chronograph with a clean, open dial. Popular with motorsport fans.",
+    kind: "chrono", dial: "#1d1d20", cs: "#c3c7cc", hand: "#f2f2f2", q: "TAG Heuer Carrera" },
+  { n: "Rolex Daytona", b: "Rolex", c: ["chrono", "luxury"], m: "automatic", y: "1963", s: "40 mm", t: 5, p: "₹30 lakh +",
+    d: "The most sought-after racing chronograph, with a tachymetre bezel. Vintage 'Paul Newman' versions sell for record prices.",
+    kind: "chrono", dial: "#e8e6df", cs: "#c0c4c9", hand: "#16263f", q: "Rolex Daytona" },
   { n: "Seiko Quartz Astron (35SQ)", b: "Seiko", c: ["vintage"], m: "quartz", y: "1969", s: "≈ 36 mm", t: 4, p: "Collector market only",
     d: "The world's first quartz wristwatch, released in Tokyo on Christmas Day 1969. It triggered the 'quartz crisis' in Swiss watchmaking.",
     kind: "analog", dial: "#d8d8d4", cs: "#d9b86a", hand: "#222", q: "Seiko Quartz Astron 35SQ vintage" }
@@ -226,6 +241,9 @@ const STORES = [
   { n: "Casio India", u: "https://www.casio.com/in", d: "Official store for Casio, G-Shock and Edifice. Check the model code against the case back.", tag: "New · official" },
   { n: "Seiko", u: "https://www.seikowatches.com", d: "Find Seiko, Presage and Grand Seiko, plus authorized-dealer locator.", tag: "New · official" },
   { n: "Ethos Watch Boutiques", u: "https://www.ethoswatches.com", d: "Multi-brand Indian retailer of Swiss luxury and premium watches, with authorized stock.", tag: "New · luxury" },
+  { n: "Helios Watch Store", u: "https://www.helioswatchstore.com/offers", d: "Multi-brand chain with 280+ stores. The Offers page lists up to 70% off on Fossil, Michael Kors, Movado, Tissot, Titan and more.", tag: "New · offers" },
+  { n: "Swiss Time House", u: "https://www.swisstimehouse.com/", d: "Multi-brand site for Longines, Rado, Tissot, Citizen, Casio and Fossil. Its 'Prices drop' page lists the sales.", tag: "New · Swiss & global" },
+  { n: "Zeus Kicks", u: "https://www.zeuskicks.com/", d: "Luxury reseller with TAG Heuer, Longines and Rolex at listed sale prices. Ask for the box, papers and warranty before paying.", tag: "Luxury · check papers" },
   { n: "Chrono24", u: "https://www.chrono24.com", d: "Global marketplace for new and pre-owned watches. Look at seller ratings and use buyer protection.", tag: "Pre-owned · global" },
   { n: "Amazon India / Flipkart", u: "https://www.amazon.in/s?k=watches", d: "Fine for budget and fashion watches. Buy from the brand's official storefront.", tag: "New · budget" }
 ];
@@ -251,4 +269,43 @@ const RED_FLAGS = [
   "Date magnifier ('cyclops') that is weak or off-centre; fuzzy engravings",
   "The watch weighs noticeably less than expected for solid steel",
   "Mismatched case back, bracelet and dial on a vintage piece (a possible Franken-watch)"
+];
+
+/* Deal snapshot captured 31 Oct 2026 from the sites' public pages. Prices change; always confirm on the site. */
+const DEALS_DATE = "31 Oct 2026";
+const DEALS = [
+  /* site, brand, model, price (INR), mrp (INR, 0 = no discount shown), url */
+  ["Swiss Time House", "Casio", "G-Shock GA-2100-1A1DR", 9195, 0, "https://www.swisstimehouse.com/casio-g987-ga-2100-1a1dr-g-shock-mens-watch"],
+  ["Swiss Time House", "Fossil", "ES5348", 11197, 15995, "https://www.swisstimehouse.com/fossil-es5348"],
+  ["Swiss Time House", "Daniel Wellington", "DW00100672K", 18995, 0, "https://www.swisstimehouse.com/daniel-wellington-dw00100672k"],
+  ["Swiss Time House", "Guess", "GW0202G2", 19995, 0, "https://www.swisstimehouse.com/guess-gw0202g2-watch"],
+  ["Swiss Time House", "Fossil", "ME3098", 19995, 0, "https://www.swisstimehouse.com/fossil-me3098-mens-watch"],
+  ["Swiss Time House", "Police", "PLPEWGM0072002W", 18636, 23295, "https://www.swisstimehouse.com/police-plpewgm0072002w"],
+  ["Swiss Time House", "Tornado", "T23105L-XFWB", 22950, 25500, "https://www.swisstimehouse.com/tornado-t23105l-xfwb"],
+  ["Swiss Time House", "Citizen", "Eco-Drive BM7630-80X", 27500, 0, "https://www.swisstimehouse.com/citizen-bm7630-80x"],
+  ["Swiss Time House", "Citizen", "NJ0151-53W (automatic)", 43900, 0, "https://www.swisstimehouse.com/citizen-nj0151-53w"],
+  ["Swiss Time House", "Tissot", "T-Race T1414173705100", 70000, 0, "https://www.swisstimehouse.com/tissot-t1414173705100-t-race-mens-watch"],
+  ["Swiss Time House", "Rado", "R48913403", 132600, 0, "https://www.swisstimehouse.com/rado-r48913403"],
+  ["Swiss Time House", "Longines", "L37814066", 190000, 0, "https://www.swisstimehouse.com/longines-l37814066-mens-watch"],
+  ["Swiss Time House", "Longines", "L37884996", 237000, 0, "https://www.swisstimehouse.com/longines-l37884996"],
+  ["Swiss Time House", "Rado", "R27086712", 371200, 0, "https://www.swisstimehouse.com/rado-r27086712"],
+
+  ["Helios", "Daniel Wellington", "Classic (men)", 8395, 13995, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Guess", "Elliot (men)", 9445, 13495, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Fossil", "Grant (men)", 11695, 19495, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Diesel", "Closer (men)", 13295, 18995, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Michael Kors", "Accelerato (men)", 14695, 24495, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Ducati", "Extreme Sports (men)", 17424, 20499, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Kenneth Cole", "KC-Newness SS25 (men)", 18195, 25995, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Edge", "Edge Ceramic (men)", 28795, 35995, "https://www.helioswatchstore.com/offers"],
+  ["Helios", "Movado", "Museum Classic (men)", 36485, 52125, "https://www.helioswatchstore.com/offers"],
+
+  ["Zeus Kicks", "Longines", "Women's L4.209.4.87.6 (quartz)", 89100, 99000, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "Longines", "HydroConquest L3.782.4.06.6", 119250, 132500, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "Longines", "L2.628.4.51.7 (38 mm automatic)", 121500, 135000, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "Longines", "L4.921.4.92.6 (38.5 mm automatic)", 125550, 139500, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "TAG Heuer", "Carrera WAR2A80.FC6337 (43 mm)", 164092, 182325, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "TAG Heuer", "Carrera WAR201C.FC6266 (41 mm)", 189000, 210000, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "Rolex", "Datejust 41 Oystersteel & white gold", 1130000, 0, "https://www.zeuskicks.com/"],
+  ["Zeus Kicks", "Rolex", "Daytona 116500LN (Panda)", 3050000, 3260000, "https://www.zeuskicks.com/"]
 ];

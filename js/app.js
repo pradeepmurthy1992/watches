@@ -70,7 +70,7 @@
       <circle cx="100" cy="100" r="82" fill="#c9a45c"/><circle cx="100" cy="100" r="76" fill="#8e7338"/>
       <circle cx="100" cy="100" r="72" fill="url(#dg)"/>
       ${markers(66, 58, "#e3c581")}
-      <text x="100" y="72" text-anchor="middle" font-family="Cormorant Garamond,serif" font-weight="700" font-size="10" letter-spacing="2" fill="#c9a45c">HOROLOGUE</text>
+      <text x="100" y="72" text-anchor="middle" font-family="Cormorant Garamond,serif" font-weight="700" font-size="9" letter-spacing="1.5" fill="#c9a45c">PRADEEP'S</text>
       <text x="100" y="138" text-anchor="middle" font-family="sans-serif" font-size="6" letter-spacing="1.5" fill="#7d7868">QUARTZ</text>
       <g id="c-h"><line x1="100" y1="100" x2="100" y2="56" stroke="#ece7dc" stroke-width="4" stroke-linecap="round"/></g>
       <g id="c-m"><line x1="100" y1="100" x2="100" y2="38" stroke="#ece7dc" stroke-width="3" stroke-linecap="round"/></g>
@@ -269,6 +269,35 @@
       `<b>${esc(s.n)}</b><span>${esc(s.d)}</span><small>${esc(s.tag)} ↗</small>`)));
   }
 
+  /* ---------- Deals ---------- */
+  const inr = n => "₹" + n.toLocaleString("en-IN");
+  const dealOff = d => d[4] > d[3] ? Math.round((1 - d[3] / d[4]) * 100) : 0;
+  function renderDeals() {
+    $("#deals-date").textContent = DEALS_DATE;
+    const siteSel = $("#d-site");
+    [...new Set(DEALS.map(d => d[0]))].forEach(s => siteSel.append(el("option", { value: s }, esc(s))));
+    const sorted = fn => [...DEALS].sort(fn)[0];
+    const picks = [
+      ["Biggest discount", sorted((a, b) => dealOff(b) - dealOff(a))],
+      ["Cheapest watch", sorted((a, b) => a[3] - b[3])],
+      ["Best under ₹25,000", [...DEALS].filter(d => d[3] <= 25000).sort((a, b) => dealOff(b) - dealOff(a) || a[3] - b[3])[0]],
+      ["Biggest saving in ₹", sorted((a, b) => (b[4] - b[3]) - (a[4] - a[3]))]
+    ];
+    $("#deal-picks").innerHTML = picks.map(([t, d]) =>
+      `<a class="pick" href="${esc(d[5])}" target="_blank" rel="noopener noreferrer"><small>${esc(t)}</small><b>${esc(d[1])} ${esc(d[2])}</b><span>${inr(d[3])}${dealOff(d) ? ` (${dealOff(d)}% off ${inr(d[4])})` : ""} · ${esc(d[0])}</span></a>`).join("");
+    const draw = () => {
+      const q = $("#d-search").value.trim().toLowerCase(), site = siteSel.value, max = Number($("#d-max").value) || Infinity, sort = $("#d-sort").value;
+      const list = DEALS.filter(d => (!site || d[0] === site) && d[3] <= max && (!q || (d[1] + " " + d[2]).toLowerCase().includes(q)));
+      list.sort((a, b) => sort === "asc" ? a[3] - b[3] : sort === "desc" ? b[3] - a[3] : dealOff(b) - dealOff(a) || a[3] - b[3]);
+      $("#deal-count").textContent = `${list.length} offer${list.length === 1 ? "" : "s"}`;
+      $("#deal-grid").innerHTML = list.map(d => `<a class="deal" href="${esc(d[5])}" target="_blank" rel="noopener noreferrer">
+        <span class="site">${esc(d[0])}</span><b>${esc(d[1])}</b><span class="model">${esc(d[2])}</span>
+        <span class="price">${inr(d[3])}${dealOff(d) ? `<s>${inr(d[4])}</s><span class="off">${dealOff(d)}% off</span>` : ""}</span></a>`).join("") || '<p class="empty">No offers match.</p>';
+    };
+    ["#d-search", "#d-site", "#d-max", "#d-sort"].forEach(s => $(s).addEventListener("input", draw));
+    draw();
+  }
+
   /* ---------- Tabs ---------- */
   const panels = [...document.querySelectorAll(".tabpanel")];
   const navLinks = [...document.querySelectorAll("#menu a")];
@@ -313,5 +342,6 @@
   setupWrist();
   renderCollection();
   renderBuy();
+  renderDeals();
   showTab(location.hash.slice(1), false);
 })();

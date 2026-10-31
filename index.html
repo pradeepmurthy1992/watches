@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Horologue — Explore, Learn &amp; Buy Watches</title>
+  <title>Pradeep's Horologue — Explore, Learn &amp; Buy Watches</title>
   <meta name="description" content="Learn how watches work, explore movements, dials, straps, vintage and luxury, browse by category, and find where to buy.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="nav" id="top">
-  <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>Horologue</a>
+  <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>Pradeep's Horologue</a>
   <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu">☰</button>
   <nav id="menu" aria-label="Main">
     <a href="#home">Home</a>
@@ -205,6 +205,22 @@
           <ul id="flags" class="warn"></ul>
         </article>
       </div>
+      <h3 class="h3">Best offers right now</h3>
+      <p class="sub">Prices snapshot from Helios, Swiss Time House and Zeus Kicks on <span id="deals-date"></span>. The sites stock different models, so use the filters to compare within your budget.</p>
+      <div id="deal-picks" class="picks"></div>
+      <div class="filters deal-filters">
+        <input id="d-search" type="search" placeholder="Search brand or model…" aria-label="Search deals">
+        <select id="d-site" aria-label="Site"><option value="">All sites</option></select>
+        <select id="d-max" aria-label="Max price">
+          <option value="">Any price</option><option value="10000">Up to ₹10,000</option><option value="25000">Up to ₹25,000</option>
+          <option value="100000">Up to ₹1 lakh</option><option value="500000">Up to ₹5 lakh</option>
+        </select>
+        <select id="d-sort" aria-label="Sort deals"><option value="disc">Biggest discount</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option></select>
+      </div>
+      <p id="deal-count" class="count" aria-live="polite"></p>
+      <div id="deal-grid" class="deal-grid"></div>
+      <p class="note">Snapshot only: stock and prices change often. Helios and Zeus Kicks links go to the site's page, not the item. Check warranty, box and papers before paying.</p>
+
       <h3 class="h3">Where to buy</h3>
       <div id="store-grid" class="store-grid"></div>
       <p class="note">External links open the retailers' own sites. This guide has no affiliation with, and earns nothing from, any of them.</p>
@@ -213,7 +229,7 @@
 </main>
 
 <footer class="footer">
-  <p><strong>Horologue</strong> · A personal watch guide. Built with plain HTML, CSS and JavaScript.</p>
+  <p><strong>Pradeep's Horologue</strong> · A personal watch guide. Built with plain HTML, CSS and JavaScript.</p>
   <p><a href="#top">Back to top ↑</a></p>
 </footer>
 

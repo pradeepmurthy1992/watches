@@ -1,4 +1,4 @@
-# Horologue
+# Pradeep's Horologue
 
 A static watch guide: explore watches by category, learn about movements, dials, complications, straps, vintage and luxury, see a personal collection, and get a buying guide.
 
