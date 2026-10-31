@@ -107,7 +107,7 @@
     state.cat = id; state.move = ""; state.tier = ""; state.q = "";
     $("#f-move").value = ""; $("#f-tier").value = ""; $("#f-search").value = "";
     renderChips(); renderCatalog();
-    $("#catalog").scrollIntoView({ behavior: "smooth" });
+    showTab("catalog");
   }
 
   function renderChips() {
@@ -269,6 +269,27 @@
       `<b>${esc(s.n)}</b><span>${esc(s.d)}</span><small>${esc(s.tag)} ↗</small>`)));
   }
 
+  /* ---------- Tabs ---------- */
+  const panels = [...document.querySelectorAll(".tabpanel")];
+  const navLinks = [...document.querySelectorAll("#menu a")];
+  function showTab(id, updateHash = true) {
+    if (!panels.some(p => p.id === id)) id = "home";
+    panels.forEach(p => { p.hidden = p.id !== id; });
+    navLinks.forEach(a => {
+      if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (updateHash && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", () => showTab(location.hash.slice(1), false));
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[href^='#']");
+    if (!a) return;
+    const id = a.getAttribute("href").slice(1);
+    if (panels.some(p => p.id === id)) { e.preventDefault(); showTab(id); }
+    else if (id === "top") { e.preventDefault(); window.scrollTo(0, 0); }
+  });
+
   /* ---------- Nav ---------- */
   function setupNav() {
     const btn = $(".nav-toggle"), menu = $("#menu");
@@ -292,4 +313,5 @@
   setupWrist();
   renderCollection();
   renderBuy();
+  showTab(location.hash.slice(1), false);
 })();
